@@ -1,45 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма реєстрації</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-container, .result-container {
+            display: none;
+        }
+        .form-container.active, .result-container.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="radio"], .form-group input[type="checkbox"] {
+            width: auto;
+        }
+        .form-group .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-group .checkbox-group label {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-    <h2>Форма реєстрації</h2>
-    <div id="registrationForm">
-        <label for="firstName">Ім'я:</label><br>
-        <input type="text" id="firstName"><br>
-        <label for="lastName">Прізвище:</label><br>
-        <input type="text" id="lastName"><br>
-        <label for="birthdate">Дата народження:</label><br>
-        <input type="text" id="birthdate"><br>
-        <label>Стать:</label><br>
-        <input type="radio" id="male" name="gender" value="male">
-        <label for="male">Чоловіча</label><br>
-        <input type="radio" id="female" name="gender" value="female">
-        <label for="female">Жіноча</label><br>
-        <label for="city">Місто:</label><br>
-        <select id="city">
-            <option value="Київ">Київ</option>
-            <option value="Харків">Харків</option>
-            <option value="Львів">Львів</option>
-            <!-- Додайте інші міста, які необхідно -->
-        </select><br>
-        <label for="address">Адреса:</label><br>
-        <textarea id="address"></textarea><br>
-        <label>Мови, якими володіє:</label><br>
-        <input type="checkbox" id="language1" value="English">
-        <label for="language1">Англійська</label><br>
-        <input type="checkbox" id="language2" value="French">
-        <label for="language2">Французька</label><br>
-        <!-- Додайте інші мови за потреби -->
-        <br>
-        <button onclick="saveRegistration()">Зберегти</button>
+    <div class="form-container active" id="form-container">
+        <h2>Реєстраційна форма</h2>
+        <form id="registration-form">
+            <div class="form-group">
+                <label for="first-name">Ім'я:</label>
+                <input type="text" id="first-name" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="last-name">Прізвище:</label>
+                <input type="text" id="last-name" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="birth-date">Дата народження:</label>
+                <input type="date" id="birth-date" name="birthDate" required>
+            </div>
+            <div class="form-group">
+                <label>Стать:</label>
+                <label><input type="radio" name="gender" value="Чоловіча" required> Чоловіча</label>
+                <label><input type="radio" name="gender" value="Жіноча"> Жіноча</label>
+            </div>
+            <div class="form-group">
+                <label for="city">Місто:</label>
+                <select id="city" name="city" required>
+                    <option value="Київ">Київ</option>
+                    <option value="Львів">Львів</option>
+                    <option value="Одеса">Одеса</option>
+                    <option value="Харків">Харків</option>
+                    <option value="Дніпро">Дніпро</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Адреса:</label>
+                <textarea id="address" name="address" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Мови, якими володіє:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="languages" value="Українська"> Українська</label>
+                    <label><input type="checkbox" name="languages" value="Англійська"> Англійська</label>
+                    <label><input type="checkbox" name="languages" value="Німецька"> Німецька</label>
+                    <label><input type="checkbox" name="languages" value="Французька"> Французька</label>
+                    <label><input type="checkbox" name="languages" value="Іспанська"> Іспанська</label>
+                </div>
+            </div>
+            <button type="button" onclick="submitForm()">Зберегти</button>
+        </form>
     </div>
-    <div id="registrationData" style="display: none;">
-        <!-- Сюди буде виводитися таблиця з даними -->
+    <div class="result-container" id="result-container">
+        <h2>Введені дані</h2>
+        <table id="result-table">
+            <tr><th>Ім'я</th><td id="result-first-name"></td></tr>
+            <tr><th>Прізвище</th><td id="result-last-name"></td></tr>
+            <tr><th>Дата народження</th><td id="result-birth-date"></td></tr>
+            <tr><th>Стать</th><td id="result-gender"></td></tr>
+            <tr><th>Місто</th><td id="result-city"></td></tr>
+            <tr><th>Адреса</th><td id="result-address"></td></tr>
+            <tr><th>Мови</th><td id="result-languages"></td></tr>
+        </table>
     </div>
-    <script src="36.js"></script>
+
+    <script>
+        function submitForm() {
+            // Зчитування значень з форми
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const birthDate = document.getElementById('birth-date').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const city = document.getElementById('city').value;
+            const address = document.getElementById('address').value;
+            const languages = [];
+            document.querySelectorAll('input[name="languages"]:checked').forEach(checkbox => {
+                languages.push(checkbox.value);
+            });
+
+            // Заповнення таблиці результатів
+            document.getElementById('result-first-name').textContent = firstName;
+            document.getElementById('result-last-name').textContent = lastName;
+            document.getElementById('result-birth-date').textContent = birthDate;
+            document.getElementById('result-gender').textContent = gender;
+            document.getElementById('result-city').textContent = city;
+            document.getElementById('result-address').textContent = address;
+            document.getElementById('result-languages').textContent = languages.join(', ');
+
+            // Показ таблиці результатів та приховування форми
+            document.getElementById('form-container').classList.remove('active');
+            document.getElementById('result-container').classList.add('active');
+        }
+    </script>
 </body>
 </html>
